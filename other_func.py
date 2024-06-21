@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import altair as alt
 from io import BytesIO
 import base64
@@ -349,3 +350,69 @@ def bargraph1(df, x, y, top, titlegraph, yaxistitle):
     )
     # Display the chart in Streamlit
     st.altair_chart(chart, use_container_width=True)
+
+#------------------------------------------------------------------------------------------------
+def sortedchart(df,x,y,top,titlegraph):
+    table_df1=df
+    x=x
+    y=y
+    top=top
+    titleofgraph=titlegraph
+    # Calculate totals for each numeric column
+    totals = table_df1.select_dtypes(include=[np.number]).sum()
+    totals['District'] = 'Total'
+    # Facility wise Target table with Total row at the end
+    df_with_total = pd.concat([table_df1, pd.DataFrame(totals).T], ignore_index=True)    
+    # Calculate the percentage and store in a new column
+    df_with_total.iloc[:, 0] = df_with_total.iloc[:, 0].replace('Total', 'Jharkhand Total')
+    #divided by 0 error aslo handeled
+    df_with_total['Percentage'] = (df_with_total.iloc[:, 2] / (df_with_total.iloc[:, 1] + 1e-10)) * 100
+    df_with_total=df_with_total.sort_values(by='Percentage', ascending=False)
+    # Handle division by zero and NaN values
+    df_with_total['Percentage'] = df_with_total['Percentage'].fillna(0).replace([float('inf'), -float('inf')], 0)
+    # Format the percentage to 2 decimal places
+    df_with_total['Percentage'] = df_with_total['Percentage'].map('{:.2f}'.format)    
+    # Create the bar chart with sorting by 'wheat' values
+    bar = alt.Chart(df_with_total).mark_bar().encode(
+        x=alt.X('District:N', sort=alt.EncodingSortField(
+            field='Percentage',  # Sort by the 'wheat' field
+            order='descending'  # Sort in descending order
+        )),
+        #y='Percentage:Q'
+        y=alt.Y('Percentage:Q', axis=alt.Axis(title='Percentage')),
+        color=alt.condition(
+            alt.datum.District == 'Jharkhand Total',  # Condition to check if the District is 'A'
+            alt.value('orange'),  # Color for District A
+            alt.value('steelblue')  # Default color for other bars
+        ),
+        tooltip=[
+            alt.Tooltip(df_with_total.columns[0], type='nominal'),
+            alt.Tooltip(df_with_total.columns[1], type='nominal'),
+            alt.Tooltip(df_with_total.columns[2], type='quantitative'),
+            alt.Tooltip(df_with_total.columns[3], type='quantitative')
+        ]        
+    )
+    # Adding data labels
+    text = bar.mark_text(
+        align='center',
+        baseline='middle',
+        dy=-5,  # Nudges text up slightly
+        fontWeight = 'bold',
+        fontSize=14
+    ).encode(
+        text=alt.Text(df_with_total.columns[3])  # Displaying the 'Monthly Report' values as text
+    )
+    # Create the rule for mean wheat value
+    rule = alt.Chart(df_with_total).mark_rule(color='red', size=1.5).encode(
+        y='mean(Percentage):Q'
+    ) 
+    # Combine the bar chart and the rule
+    chart = (bar + text + rule).properties(width=640, 
+                                           title=alt.TitleParams(
+                                                text=titleofgraph,
+                                                fontSize=21,
+                                                anchor='middle',
+                                                color='black'
+                                            )
+            )
+    st.altair_chart(chart, theme=None, use_container_width=True)

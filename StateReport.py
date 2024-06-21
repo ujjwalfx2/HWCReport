@@ -506,7 +506,7 @@ if menu_id == "statereport":
         # Display the merged table headings with color using HTML
         st.write(merge_table_headings_with_color(targetachievementtable), unsafe_allow_html=True)
         st.markdown(other_func.get_table_download_link(targetachievementtable), unsafe_allow_html=True)        
-        st.markdown("---")
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
         #District wise Total Target Vs Operational
         other_func.bargraph1(
@@ -517,6 +517,12 @@ if menu_id == "statereport":
             titlegraph='District wise Total Target Vs Operational Facility',
             yaxistitle='Operational/Target'
         )
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Operational Facility'
+        top="District"
+        title="District wise % of Operational Facility"                
+        other_func.sortedchart(target_op_merged_df,xaxis,yaxis,top,title)
 
 
 if menu_id == "districtreport":
