@@ -25,6 +25,9 @@ hide_streamlit_style = """
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)  # unsafe_allow_html allows us to embed html code
 
+# Set the configuration option to hide the Streamlit footer
+st.set_option('deprecation.showStreamlitFooter', False)
+
 # specify the primary menu definition
 menu_data = [
     {'label':"State Report", 'id':"statereport"},   

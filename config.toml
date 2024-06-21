@@ -1,0 +1,5 @@
+[theme]
+base="light"  # or "dark"
+
+# To hide the "Made with Streamlit" footer
+showFooter = false
