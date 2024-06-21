@@ -3,6 +3,15 @@ import altair as alt
 from io import BytesIO
 import base64
 
+
+#--------------------------------------------------------------------------------------------------------
+def pagecounter():
+     #pagecounter
+    if 'page_count' not in st.session_state: st.session_state.page_count = 0
+    # Increment the page count
+    st.session_state.page_count += 1    
+    st.markdown(f"<div style=padding: 1px;'><h4 style='text-align: center; color: black;'>Total Visits - {st.session_state.page_count}</h4></div>", unsafe_allow_html=True)
+
 #--------------------------------------------------------------------------------------------------------
 #KPI colored boxes at the top
 def display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc):
@@ -98,6 +107,9 @@ def generate_excel_download_link(df):
     b64 = base64.b64encode(towrite.read()).decode()
     href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="Rename_This_File.xlsx">Download </a>'
     return st.markdown(href, unsafe_allow_html=True)
+
+#--------------------------------------------------------------------------
+
 
 #---------------------------------------------------------------------
 #same as bargarph 1 but with more bar width

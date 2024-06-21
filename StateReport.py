@@ -467,6 +467,48 @@ if menu_id == "statereport":
             )
         st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
+        #Operational AAM Tab - Formatted Table
+        st.write("##### District wise and Facility Type wise Target Vs Operational Ayushman Arogya Mandir")
+        def color_percentage(value, cmap='RdYlGn'):
+            try:
+                if isinstance(value, str):
+                    value = float(value.rstrip('%')) / 100  # Convert to a value between 0 and 1
+                elif isinstance(value, (int, float)):
+                    value = value / 100
+                else:
+                    raise ValueError("Invalid value type")                
+                norm = mcolors.Normalize(vmin=0, vmax=1)
+                cmap = plt.get_cmap(cmap)
+                rgba = cmap(norm(value))
+                color = mcolors.to_hex(rgba)
+            except ValueError:
+                color = '#ffffff'  # Default to white for non-numeric values
+            return color
+
+        def merge_table_headings_with_color(df, cmap='RdYlGn'):
+            html = "<table style='border-collapse: collapse;'>"
+            html += "<tr style='background-color: #f2f2f2;' align='center'><th rowspan='2' style='border: 1px solid #dddddd;  background-color: #CFE267;'>District_Name</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #6BB8EA;'>SHC</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #A16BEA;'>AYUSH</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #CB6BEA;'>PHC</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #67E2B0;'>UPHC</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #67B0E2;'>UHWCs</th><th colspan='3' style='border: 1px solid #dddddd; background-color: #776BEA;'>TOTAL</th></tr>"
+            html += "<tr style='background-color: #f2f2f2;'><th style='border: 1px solid #dddddd; background-color: #6BB8EA;'>SHC</th><th style='border: 1px solid #dddddd; background-color: #6BB8EA;'>Target</th><th style='border: 1px solid #dddddd; background-color: #6BB8EA;'>%</th><th style='border: 1px solid #dddddd; background-color: #A16BEA;'>AYUSH</th><th style='border: 1px solid #dddddd; background-color: #A16BEA;'>Target</th><th style='border: 1px solid #dddddd; background-color: #A16BEA;'>%</th><th style='border: 1px solid #dddddd;background-color: #CB6BEA;'>PHC</th><th style='border: 1px solid #dddddd;background-color: #CB6BEA;'>Target</th><th style='border: 1px solid #dddddd;background-color: #CB6BEA;'>%</th><th style='border: 1px solid #dddddd; background-color: #67E2B0;'>UPHC</th><th style='border: 1px solid #dddddd;background-color: #67E2B0;'>Target</th><th style='border: 1px solid #dddddd; background-color: #67E2B0;'>%</th><th style='border: 1px solid #dddddd; background-color: #67B0E2;'>UHWC</th><th style='border: 1px solid #dddddd; background-color: #67B0E2;'>Target</th><th style='border: 1px solid #dddddd; background-color: #67B0E2;'>%</th><th style='border: 1px solid #dddddd; background-color: #776BEA;'>Total Achievement</th><th style='border: 1px solid #dddddd; background-color: #776BEA;'>Total Target</th><th style='border: 1px solid #dddddd; background-color: #776BEA;'>%</th></tr>"
+            for idx, row in df.iterrows():
+                if idx == len(df) - 1:  # Check if it's the last row
+                    html += "<tr style='font-weight: bold; text-align: center;'>"
+                else:
+                    html += "<tr>"
+                for val, col_name in zip(row, df.columns):
+                    if col_name.endswith('%'):
+                        color = color_percentage(val, cmap)
+                        html += f"<td style='border: 1px solid #dddddd; background-color: {color};' align='center'>{val}</td>"
+                    else:
+                        html += f"<td style='border: 1px solid #dddddd;' align='center'>{val}</td>"
+                html += "</tr>"            
+            html += "</table>"
+            return html
+        # Display the merged table headings with color using HTML
+        st.write(merge_table_headings_with_color(targetachievementtable), unsafe_allow_html=True)
+        #st.markdown(other_func.get_table_download_link(targetachievementtable), unsafe_allow_html=True)        
+        st.markdown("---")
+
+
 if menu_id == "districtreport":
     st.dataframe(FPE)
 
@@ -478,3 +520,5 @@ if menu_id == "facilityreport":
 
 #gototop button, it will always be at the bootom of the page
 other_func.gototop()
+
+other_func.pagecounter()
