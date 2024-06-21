@@ -505,7 +505,7 @@ if menu_id == "statereport":
             return html
         # Display the merged table headings with color using HTML
         st.write(merge_table_headings_with_color(targetachievementtable), unsafe_allow_html=True)
-        #st.markdown(other_func.get_table_download_link(targetachievementtable), unsafe_allow_html=True)        
+        st.markdown(other_func.get_table_download_link(targetachievementtable), unsafe_allow_html=True)        
         st.markdown("---")
 
 

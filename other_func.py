@@ -1,8 +1,9 @@
 import streamlit as st
+import pandas as pd
 import altair as alt
 from io import BytesIO
 import base64
-
+import io
 
 #--------------------------------------------------------------------------------------------------------
 def pagecounter():
@@ -10,7 +11,7 @@ def pagecounter():
     if 'page_count' not in st.session_state: st.session_state.page_count = 0
     # Increment the page count
     st.session_state.page_count += 1    
-    st.markdown(f"<div style=padding: 1px;'><h4 style='text-align: center; color: black;'>Total Visits - {st.session_state.page_count}</h4></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style=padding: 1px;'><h6 style='text-align: center; color: blue;'>Total Visits - {st.session_state.page_count}</h6></div>", unsafe_allow_html=True)
 
 #--------------------------------------------------------------------------------------------------------
 #KPI colored boxes at the top
@@ -71,8 +72,8 @@ def gototop():
         """
         , unsafe_allow_html=True)
     
-    #------------------------------------------------
-    #formatted Table
+#-------------------------------------------------------------------------------------------------------------
+#formatted Table
 def formattedtable(table_df):     
         table_df1=table_df
         # Calculate the percentage and store in a new column
@@ -109,7 +110,67 @@ def generate_excel_download_link(df):
     return st.markdown(href, unsafe_allow_html=True)
 
 #--------------------------------------------------------------------------
+def get_table_download_link(df, file_name='formatted_table.xlsx'):
+    excel_file = download_excel_file(df)
+    b64 = base64.b64encode(excel_file.read()).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">Download Excel file</a>'
+    return href
 
+#---------------------------------------------------------------------
+def download_excel_file(df):
+        output = io.BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, index=False, sheet_name='Sheet1')        
+        # Get the xlsxwriter workbook and worksheet objects.
+        workbook  = writer.book
+        worksheet = writer.sheets['Sheet1']        
+        # Apply conditional formatting to the percentage columns
+        percentage_columns = [col for col in df.columns if col.endswith('%')]
+        for col_num, column in enumerate(df.columns):
+                if column in percentage_columns:
+                        col_letter = chr(65 + col_num)
+                        worksheet.conditional_format(f'{col_letter}2:{col_letter}{len(df) + 1}', 
+                                                        {'type': '3_color_scale',
+                                                        'min_color': "#ff0000",
+                                                        'mid_color': "#ffff00",
+                                                        'max_color': "#00ff00"})
+        # Format the header
+        header_format = workbook.add_format({
+                'bold': True,
+                'text_wrap': True,
+                'valign': 'top',
+                'fg_color': '#D7E4BC',
+                'border': 1,
+                'align': 'center'
+        })
+        for col_num, value in enumerate(df.columns.values):
+                worksheet.write(0, col_num, value, header_format)        
+        # Format all data cells
+        data_format = workbook.add_format({
+                'border': 1,
+                'align': 'center'
+        })
+        for row_num in range(1, len(df) + 1):
+                for col_num, value in enumerate(df.iloc[row_num - 1]):
+                        worksheet.write(row_num, col_num, value, data_format)
+        # Format the last row
+        last_row_format = workbook.add_format({
+                'bold': True,
+                'border': 1,
+                'align': 'center'
+        })
+        for col_num, value in enumerate(df.iloc[-1]):
+                worksheet.write(len(df), col_num, value, last_row_format)   
+        # Set automatic column width
+        for col_num, column in enumerate(df.columns):
+                max_length = max(
+                        df[column].astype(str).map(len).max(),  # Get the max length of the data in the column
+                        len(column)  # Get the length of the column header
+                ) + 2  # Add a little extra space
+                worksheet.set_column(col_num, col_num, max_length)    
+        writer.close()
+        output.seek(0)    
+        return output
 
 #---------------------------------------------------------------------
 #same as bargarph 1 but with more bar width
