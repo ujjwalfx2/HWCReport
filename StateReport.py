@@ -453,3 +453,4 @@ if menu_id == "facilityreport":
     st.dataframe(sd)
 
 #gototop button, it will always be at the bootom of the page
+other_func.gototop()
