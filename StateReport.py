@@ -333,103 +333,104 @@ menu_id = hc.nav_bar(menu_definition=menu_data)
 
 if menu_id == "statereport":
     #KPI
-    st.subheader(f"AAM Dashboard for the month of : {DE['Month-Year'].unique()}")    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        wch_colour_box = (50,1810,26)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-hospital"
-        sline = "Total Operational Facility"
-        i = total_facility
-        per = op_percent
-        shc = op_shc
-        ayush = op_ayush
-        phc = op_phc
-        uphc = op_uphc
-        uhwc = op_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
-        
-    with col2:
-        wch_colour_box = (0,102,204)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-pen"
-        sline = "Total Facility Reported Daily Entry >=20 days"
-        i = DE_total
-        per = round(DE_total/total_facility * 100)
-        shc = DE_shc
-        ayush = DE_ayush
-        phc = DE_phc
-        uphc = DE_uphc
-        uhwc = DE_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
-        
-    with col3:
-        wch_colour_box = (204,20,200)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-file"
-        sline = "Total Facility Reported Monthly Report (SD)"
-        i = sd_total
-        per = round(sd_total/total_facility * 100)
-        shc = sd_shc
-        ayush = sd_ayush
-        phc = sd_phc
-        uphc = sd_uphc
-        uhwc = sd_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
-        
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        wch_colour_box = (50,500,150)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-hand-holding-heart"
-        sline = "Total Facility Reported Wellness Entry >=10 days"
-        i = w_total
-        per = round(w_total/total_facility * 100)
-        shc = w_shc
-        ayush = w_ayush
-        phc = w_phc
-        uphc = w_uphc
-        uhwc = w_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+    st.subheader(f"AAM Dashboard for the month of : {DE['Month-Year'].unique()}")
+    with st.expander("Click to see Key Performance Indicators (KPI)"):    
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            wch_colour_box = (50,1810,26)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-hospital"
+            sline = "Total Operational Facility"
+            i = total_facility
+            per = op_percent
+            shc = op_shc
+            ayush = op_ayush
+            phc = op_phc
+            uphc = op_uphc
+            uhwc = op_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
             
-    with col2:
-        wch_colour_box = (230,173,170)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-file"
-        sline = "80 % availability of Medicine"
-        i = drug_total
-        per = round(drug_total/total_facility * 100)
-        shc = drug_shc
-        ayush = drug_ayush
-        phc = drug_phc
-        uphc = drug_uphc
-        uhwc = drug_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)        
-    with col3:
-        wch_colour_box = (255,195,0)
-        wch_colour_font = (0,0,0)
-        fontsize = 36
-        valign = "left"
-        iconname = "fas fa-hand-holding-heart"
-        sline = "80 % availability of Diagnostics"
-        i = diagnostics_total
-        per = round(diagnostics_total/total_facility * 100)
-        shc = diagnostics_shc
-        ayush = diagnostics_ayush
-        phc = diagnostics_phc
-        uphc = diagnostics_uphc
-        uhwc = diagnostics_uhwc
-        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        with col2:
+            wch_colour_box = (0,102,204)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-pen"
+            sline = "Total Facility Reported Daily Entry >=20 days"
+            i = DE_total
+            per = round(DE_total/total_facility * 100)
+            shc = DE_shc
+            ayush = DE_ayush
+            phc = DE_phc
+            uphc = DE_uphc
+            uhwc = DE_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+            
+        with col3:
+            wch_colour_box = (204,20,200)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-file"
+            sline = "Total Facility Reported Monthly Report (SD)"
+            i = sd_total
+            per = round(sd_total/total_facility * 100)
+            shc = sd_shc
+            ayush = sd_ayush
+            phc = sd_phc
+            uphc = sd_uphc
+            uhwc = sd_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+            
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            wch_colour_box = (50,500,150)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-hand-holding-heart"
+            sline = "Total Facility Reported Wellness Entry >=10 days"
+            i = w_total
+            per = round(w_total/total_facility * 100)
+            shc = w_shc
+            ayush = w_ayush
+            phc = w_phc
+            uphc = w_uphc
+            uhwc = w_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+                
+        with col2:
+            wch_colour_box = (230,173,170)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-file"
+            sline = "80 % availability of Medicine"
+            i = drug_total
+            per = round(drug_total/total_facility * 100)
+            shc = drug_shc
+            ayush = drug_ayush
+            phc = drug_phc
+            uphc = drug_uphc
+            uhwc = drug_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)        
+        with col3:
+            wch_colour_box = (255,195,0)
+            wch_colour_font = (0,0,0)
+            fontsize = 36
+            valign = "left"
+            iconname = "fas fa-hand-holding-heart"
+            sline = "80 % availability of Diagnostics"
+            i = diagnostics_total
+            per = round(diagnostics_total/total_facility * 100)
+            shc = diagnostics_shc
+            ayush = diagnostics_ayush
+            phc = diagnostics_phc
+            uphc = diagnostics_uphc
+            uhwc = diagnostics_uhwc
+            other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
     st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
     menu_data = [
