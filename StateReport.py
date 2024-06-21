@@ -18,15 +18,16 @@ FPE, DE, sd, wl, target = load_data()
 
 # hide menu and footer
 hide_streamlit_style = """
-            <style>
-            [data-testid="stToolbar"] {visibility: hidden !important;}
-            footer {visibility: hidden !important;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)  # unsafe_allow_html allows us to embed html code
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .css-1lsmgbg.egzxvld0 {visibility: hidden;}  /* Specific class used by Streamlit footer */
+    </style>
+    """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # Set the configuration option to hide the Streamlit footer
-st.set_option('deprecation.showStreamlitFooter', False)
+#st.set_option('deprecation.showStreamlitFooter', False)
 
 # specify the primary menu definition
 menu_data = [
