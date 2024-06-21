@@ -5,6 +5,7 @@ import numpy as np
 import other_func #function calling from key_indicator py file
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
+from openpyxl import Workbook
 
 def load_data():
     # Load the CSV file
