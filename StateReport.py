@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import hydralit_components as hc
 import numpy as np
+import other_func #function calling from key_indicator py file
 
 def load_data():
     # Load the CSV file
@@ -43,8 +44,6 @@ op_phc = FPE['FACILITY_TYPE'].eq("PHC").sum()
 op_uphc = FPE['FACILITY_TYPE'].eq("UPHC").sum()
 op_uhwc =FPE['FACILITY_TYPE'].eq("UHWCs").sum()
 
-#faciliy_type
-
 # Total Population in catchment area of facility remove any commas and convert in int format
 FPE['Total Population in catchment area of facility']=FPE['Total Population in catchment area of facility'].replace({',': ''}, regex=True)
 FPE['Total Population in catchment area of facility']=FPE['Total Population in catchment area of facility'].astype(int)
@@ -54,34 +53,27 @@ col=['NIN ID', 'HFI_Name', 'PHC_CHC_Type', 'FACILITY_TYPE',
     'Proposed Date', 'Progressive Date',
     'Total Population in catchment area of facility','Type_of_Medicine','Type_of_Diagnostics']
 FPE=FPE[col]
-
 col5 = ['District_Name','FACILITY_TYPE']
 pivot_data=FPE[col5]
-
 district_operational = pd.pivot_table(pivot_data, index='District_Name', columns='FACILITY_TYPE', aggfunc=len, fill_value=0)
 #add total column
 district_operational['Total'] = district_operational.sum(axis=1)
-#DE=DE.groupby(['NIN ID','Month-Year']).sum().reset_index()
 pivot_table = pd.pivot_table(pivot_data, index='District_Name', columns='FACILITY_TYPE', aggfunc=len, fill_value=0, margins=True, margins_name='Total')
 pivot_table1=pivot_table
-#pivot_table1=pivot_table1.rename(columns={'District_Name':'District'}, inplace=True)
+
 #target and achievement Table merge
 # Calculate the totals for each column
 target1=target
 target1 = target1.rename(columns={'District': 'District_Name'})
-
 #merge District Operational list with Target 1 list without total row
 TargetOperationlWithoutTotal=pd.merge(district_operational,target1, on=['District_Name'], how='outer')
 # Calculate totals for each numeric column
 totals = target1.select_dtypes(include=[np.number]).sum()
 totals['District_Name'] = 'Total'
-#Totalrowonly=pd.merge(operational_totals,Target_Total, on=['District_Name'], how='outer')
-#Totalrowonly
 # Facility wise Target table with Total row at the end
 df_with_total = pd.concat([target1, pd.DataFrame(totals).T], ignore_index=True)
 # merge Target and achievement datafram and calculate facility type wise %
 targetachievementtable=pd.merge(df_with_total,pivot_table1, on=['District_Name'], how='outer')
-
 #Creating new dataframe for total target and operational
 targetachievementtable1=pd.merge(pivot_table1,df_with_total, on=['District_Name'], how='outer')
 # Extract row labeled "Total" into a new DataFrame
@@ -90,10 +82,8 @@ total_row_only = total_row_only.rename(columns={'Target': 'Total-Target'})
 #converting row to column
 # Melt the DataFrame
 melted_df = total_row_only.melt(var_name='Category', value_name='Operational')
-
 # Create 'Achievement' column
 melted_df['Target'] = None
-
 # Assign the values from row 7 onwards to the 'Achievement' column of the corresponding categories
 for i in range(7, len(melted_df)):
     category = melted_df.loc[i, 'Category']
@@ -118,27 +108,18 @@ targetachievementtable['Total_%'] = np.round((targetachievementtable['Total'] / 
 targetachievementtable=targetachievementtable[['District_Name',	'SHC',	'SHC-Target',	'SHC_%',	'AYUSH',	'AYUSH-Target',	'AYUSH_%',	'PHC',	'PHC-Target',	'PHC_%',	'UPHC',	'UPHC-Target',
                                                	'UPHC_%',	'UHWCs',	'UHWCs-Target',	'UHWCs_%',	'Total',	'Target',	'Total_%']]
 
-
-#only one column of a table make bold and centred
-#pivot_table['Total'] = pivot_table['Total'].apply(lambda x: f'<div style="text-align: center;"><b>{x}</b></div>')
-
 # Convert pivot table to Markdown table
 pivot_table_styled = pivot_table.applymap(lambda x: f'<div style="text-align: center;"><b>{x}</b></div>')
 
-# Display Markdown table
-#st.markdown(pivot_table_styled.to_markdown(), unsafe_allow_html=True)
-
 geo=['HFI_Name', 'PHC_CHC_Type','State_Name', 'District_Name', 'Taluka_Name', 'Block_Name']
-
 # fill NA if any value is missing in geo 
 FPE[geo]=FPE[geo].fillna('NA')
 # total facility 
 total_facility=FPE.shape[0]
-#st.write(f"Total facility in facility profile entry is :{total_facility}")
+
 
 # DE cleaning *******************************************************************************************************************
 #Entry Date convert in date format in format of 2022-05-09
-
 DE['Entry Date'] = pd.to_datetime(DE['Entry Date'], format='%Y-%m-%d')
 DE.head(3)
 # add month-year column from entry date
@@ -147,29 +128,23 @@ DE['Footfall Total'] = DE["Footfall Male"] + DE["Footfall Female "]+DE["Footfall
 # if wellness session conducted is yes then 1 else 0
 DE['Wellness sessions conducted ']=DE['Wellness sessions conducted '].replace({'Yes': 1, 'No': 0})
 DE['ReportingDE']=1
-
 DE_col=['NIN ID', 'ReportingDE', 'Footfall Total',
     ' Patients availed tele-consulation services ',
     'Wellness sessions conducted ',
         'Month-Year']
 DE=DE[DE_col]
-
 #groupby
 DE=DE.groupby(['NIN ID','Month-Year']).sum().reset_index()
-
 #total facility in DE
 #st.write(f"Total facility in DE is :{DE['NIN ID'].nunique()}") 
 
 # SD cleaning ********************************************************************************************************************
-
 #Entry Date convert in date format in format of 2022-11-30
 sd['Entry Month'] = pd.to_datetime(sd['Entry Month'], format='%Y-%m-%d')
-
 # # add month-year column from entry date
 sd['Month-Year'] = sd['Entry Month'].dt.strftime('%b-%Y')
 #show all the columns in view
 pd.set_option('display.max_columns', None)
-
 int_col=['Individuals empanelled',
     'Community Based Assessment Checklist filled',
     'HTN Individuals screened Male', 'HTN Individuals screened Female',
@@ -196,16 +171,15 @@ int_col=['Individuals empanelled',
     'Total Patients received antihypertensive medicines at this centre',
     'Total Patients received ant-diabetic medicines at this centre','Medicines_TPR_AO_M',"Closing stock of glucostrips"]
 
-
 # convert all the int columns in int format
 sd_int=sd[int_col].head()
 # remove any commas in the int columns
 sd[sd_int.columns] = sd[sd_int.columns].replace({',': ''}, regex=True)
 #convert all the int columns in int format
 sd[int_col] = sd[int_col].apply(pd.to_numeric, errors='coerce', axis=1)
-
 # add total column in sd_int
 sd['Facility Type'] = sd['FACILITY_TYPE']
+
 #HTN
 sd['HTN screened '] = sd['HTN Individuals screened Male']+ sd['HTN Individuals screened Female']+ sd['HTN Individuals screened Other']
 sd['HTN diagnosed '] = sd['HTN Newly diagnosed Male']+ sd['HTN Newly diagnosed Female']+ sd['HTN Newly diagnosed Other']
@@ -221,7 +195,6 @@ sd['OC screened '] = sd['OC Individuals screened Male']+ sd['OC Individuals scre
 sd['OC diagnosed '] = sd['OC Newly diagnosed Male']+ sd['OC Newly diagnosed Female']+ sd['OC Newly diagnosed Other']
 sd['OC on treatment '] = sd['OC On treatment male']+ sd['OC On treatment Female']+ sd['OC On treatment Other']
 
-
 #referred
 sd['TB_Referred'] = sd['Individuals referred for screening male']+ sd['Individuals referred for screening female']+ sd['Individuals referred for screening other']
 
@@ -235,6 +208,7 @@ sd["equipments_BP_gluco"]=sd["Availability of functional BP apparatus"].replace(
 sd["pbi_tbi"]=sd["Performance/team based incentives for MO/SN/CHO"].replace({'Yes': 1, 'No': 0})+sd["Team based incentives for ASHA/MPW"].replace({'Yes': 1, 'No': 0})
 sd["JASmeeting"]=sd["JAS monthly meeting conducted"].replace({'Yes': 1, 'No': 0})
 sd['ReportingSD']=1
+#select columns
 selected_col=['NIN ID', 'Facility Name', 'Facility Type', 'State', 'District',
     'Taluka', 'Block', 'Entry Month',
             'Month-Year','ReportingSD',
@@ -247,28 +221,21 @@ sd = sd.groupby(['NIN ID', 'Entry Month']).sum().reset_index()
 # total facility in SD
 #st.write(f"Total facility in SD is :{sd['NIN ID'].nunique()}")
 
-#--- Cleaning Wellness report
+#Wellness cleaning ********************************************************************************************************************
 #rename NIN column to NIN ID
 wl = wl.rename(columns={'NIN':'NIN ID'})
-
-
 
 #merge DE and sd
 df=pd.merge(DE, sd, on=['NIN ID','Month-Year'], how='outer')
 #merge with FPE
 df=pd.merge(FPE,df, on=['NIN ID'], how='outer').reset_index().reset_index()
-#df.to_csv('Data/FPE_Merge.csv')
-
 #df add a target population column with 80 percent of the total population
 df['Target Population']=round(df['Total Population in catchment area of facility']*0.08,0)
-
 # cal_Reporting map value>=20 than 15, IF value >=10 than 10 else 0
 df['cal_Reporting']=np.where(df['ReportingDE']>=20,15,np.where(df['ReportingDE']>=10,10,0))
 # cal_footfall map if 'Footfall Total'/'Target Population'>=1, 15,if 'Footfall Total'/'Target Population'>=.8, 10,if 'Footfall Total'/'Target Population'>=.5,5, else 0
-
 df['cal_footfall']=np.where((df['Footfall Total']/df['Target Population'])>=1,15,np.where((df['Footfall Total']/df['Target Population'])>=.8,10,np.where((df['Footfall Total']/df['Target Population'])>=.5,5,0)))
 # Equipment value AV4=2,10,IF value =1,5,0
-
 df['cal_Equipment']=np.where(df['equipments_BP_gluco']==2,5,0)
 df['cal_JAS']=np.where(df['JASmeeting']==1,10,0)
 # pbi_tbi value AV4=2,10,IF value =1,5,0
@@ -279,6 +246,7 @@ df['cal_tb']=np.where((df['TB_Referred']/df['Footfall Total'])>=.03,10,np.where(
 df['cal_teleconsultation']=np.where(df[' Patients availed tele-consulation services ']>=25,5,np.where(df[' Patients availed tele-consulation services ']>=15,3,np.where(df[' Patients availed tele-consulation services ']>=1,1,0)))
 # wellness and yoga AQ6>=10,5,IF(AQ6>=5,3,0)
 df['cal_wellness']=np.where(df['Wellness sessions conducted ']>=10,5,np.where(df['Wellness sessions conducted ']>=5,3,0))
+
 # save the df in csv
 #df.to_excel("data/df.xlsx",sheet_name='df') 
 
@@ -287,11 +255,9 @@ distcount = df.groupby(["District_Name"], sort=True)["State_Name"].count().renam
 jharkhand = df["State_Name"].count()
 # Add Grand Total row to the DataFrame
 grand_total_row = pd.DataFrame({"District_Name": ["Total"], "Total Facility": [jharkhand]})
-
 distcount = pd.concat([distcount, grand_total_row], ignore_index=True)
 # Rename column
 distcount = distcount.rename(columns={'District_Name':'District'})
-
 # Count occurrences in the second dataframe
 new_cal_wellness = wl['NIN ID'].value_counts().reset_index()
 new_cal_wellness.columns = ['NIN ID', 'ReportingWL']
@@ -363,7 +329,111 @@ menu_data = [
 menu_id = hc.nav_bar(menu_definition=menu_data)
 
 if menu_id == "statereport":
-    st.dataframe(target)
+    #KPI
+    st.subheader(f"AAM Dashboard for the month of : {DE['Month-Year'].unique()}")    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        wch_colour_box = (50,1810,26)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-hospital"
+        sline = "Total Operational Facility"
+        i = total_facility
+        per = op_percent
+        shc = op_shc
+        ayush = op_ayush
+        phc = op_phc
+        uphc = op_uphc
+        uhwc = op_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        
+    with col2:
+        wch_colour_box = (0,102,204)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-pen"
+        sline = "Total Facility Reported Daily Entry >=20 days"
+        i = DE_total
+        per = round(DE_total/total_facility * 100)
+        shc = DE_shc
+        ayush = DE_ayush
+        phc = DE_phc
+        uphc = DE_uphc
+        uhwc = DE_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        #st.metric(label="Total Facilit Reported Daily Entry", value=DE['NIN ID'].nunique(), delta=123,
+        #    delta_color="off")    
+    
+    with col3:
+        wch_colour_box = (204,20,200)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-file"
+        sline = "Total Facility Reported Monthly Report (SD)"
+        i = sd_total
+        per = round(sd_total/total_facility * 100)
+        shc = sd_shc
+        ayush = sd_ayush
+        phc = sd_phc
+        uphc = sd_uphc
+        uhwc = sd_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        #st.metric(label="Total Facility Reported Monthly Service Delivery", value=sd['NIN ID'].nunique(), delta=123,
+        #    delta_color="off")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        wch_colour_box = (50,500,150)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-hand-holding-heart"
+        sline = "Total Facility Reported Wellness Entry >=10 days"
+        i = w_total
+        per = round(w_total/total_facility * 100)
+        shc = w_shc
+        ayush = w_ayush
+        phc = w_phc
+        uphc = w_uphc
+        uhwc = w_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        #st.metric(label="Total Facility Reported Wellness Entry", value=wl['NIN'].nunique(), delta=123,
+        #    delta_color="off")
+    
+    with col2:
+        wch_colour_box = (230,173,170)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-file"
+        sline = "80 % availability of Medicine"
+        i = drug_total
+        per = round(drug_total/total_facility * 100)
+        shc = drug_shc
+        ayush = drug_ayush
+        phc = drug_phc
+        uphc = drug_uphc
+        uhwc = drug_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
+        #st.metric(label="Total Facility Reported Monthly Service Delivery", value=sd['NIN ID'].nunique(), delta=123,
+        #    delta_color="off")
+    with col3:
+        wch_colour_box = (255,195,0)
+        wch_colour_font = (0,0,0)
+        fontsize = 36
+        valign = "left"
+        iconname = "fas fa-hand-holding-heart"
+        sline = "80 % availability of Diagnostics"
+        i = diagnostics_total
+        per = round(diagnostics_total/total_facility * 100)
+        shc = diagnostics_shc
+        ayush = diagnostics_ayush
+        phc = diagnostics_phc
+        uphc = diagnostics_uphc
+        uhwc = diagnostics_uhwc
+        other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
