@@ -1,6 +1,7 @@
 import streamlit as st
 import altair as alt
-
+from io import BytesIO
+import base64
 
 #--------------------------------------------------------------------------------------------------------
 #KPI colored boxes at the top
@@ -86,7 +87,17 @@ def formattedtable(table_df):
         html_table = styled_df.to_html()
         # Display the styled, sorted merged dataframe with heatmap
         st.markdown(html_table, unsafe_allow_html=True)         
-        #generate_excel_download_link(styled_df)  
+        generate_excel_download_link(styled_df)  
+
+#----------------------------------------------------------------------
+def generate_excel_download_link(df):
+    # Credit Excel: https://discuss.streamlit.io/t/how-to-add-a-download-excel-csv-function-to-a-button/4474/5
+    towrite = BytesIO()
+    df.to_excel(towrite, index=False, header=True)  # write to BytesIO buffer
+    towrite.seek(0)  # reset pointer
+    b64 = base64.b64encode(towrite.read()).decode()
+    href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="Rename_This_File.xlsx">Download </a>'
+    return st.markdown(href, unsafe_allow_html=True)
 
 #---------------------------------------------------------------------
 #same as bargarph 1 but with more bar width
