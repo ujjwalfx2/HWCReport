@@ -508,6 +508,16 @@ if menu_id == "statereport":
         st.markdown(other_func.get_table_download_link(targetachievementtable), unsafe_allow_html=True)        
         st.markdown("---")
 
+        #District wise Total Target Vs Operational
+        other_func.bargraph1(
+            target_op_merged_df,
+            x='District',
+            y='Operational Facility',
+            top='Target',
+            titlegraph='District wise Total Target Vs Operational Facility',
+            yaxistitle='Operational/Target'
+        )
+
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
