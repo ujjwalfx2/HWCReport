@@ -455,7 +455,15 @@ if menu_id == "statereport":
             other_func.formattedtable(total_row_only1[["Category","Target", "Operational Facility"]])             
         with col2:        
             total_row_only1 = total_row_only1.rename(columns={'Category': 'District'})
-            st.write("hi")
+            other_func.bargraph2(
+                total_row_only1,
+                x='District',
+                y='Operational Facility',
+                top='Target',
+                titlegraph='Total Target Vs Total Operational Facility',
+                yaxistitle='Operational/Target'
+            )
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
 if menu_id == "districtreport":
     st.dataframe(FPE)

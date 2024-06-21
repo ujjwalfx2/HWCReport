@@ -1,5 +1,5 @@
 import streamlit as st
-
+import altair as alt
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -87,3 +87,92 @@ def formattedtable(table_df):
         # Display the styled, sorted merged dataframe with heatmap
         st.markdown(html_table, unsafe_allow_html=True)         
         #generate_excel_download_link(styled_df)  
+
+#---------------------------------------------------------------------
+#same as bargarph 1 but with more bar width
+def bargraph2(df, x, y, top, titlegraph, yaxistitle):
+    # Create a melted DataFrame for easier plotting
+    melted_df = df.melt(id_vars=[x], value_vars=[y, top], var_name='Category', value_name='Count')
+    # Base chart for common encodings
+    base = alt.Chart(melted_df).encode(
+        x=alt.X(x, title=None, axis=alt.Axis(labelAngle=-90)),
+        tooltip=[x, 'Category:N', 'Count']
+    )    
+    # Bar chart for Main bar with larger bar width
+    bar1 = base.transform_filter(
+        alt.datum.Category == top
+    ).mark_bar(size=65).encode(
+        y=alt.Y('Count', title=yaxistitle),
+        color=alt.value('blue')
+    )    
+    # Bar chart for Secondary bar with smaller bar width
+    bar2 = base.transform_filter(
+        alt.datum.Category == y
+    ).mark_bar(size=45).encode(
+        y=alt.Y('Count', title=yaxistitle, axis=alt.Axis(titleColor='black', titleFontWeight='bold')),
+        color=alt.value('orange')
+    )
+    # Data labels for Main Bar
+    bar1_text = base.transform_filter(
+        alt.datum.Category == top
+    ).mark_text(
+        align='center',
+        baseline='middle',
+        dy=-10,  # Adjust vertical position of labels
+        color='black',
+        fontWeight='bold',
+        fontSize=16
+    ).encode(
+        y=alt.Y('Count'),
+        text=alt.Text('Count:Q')
+    )
+    # Data labels for Secondary bar
+    bar2_text = base.transform_filter(
+        alt.datum.Category == y
+    ).mark_text(
+        align='center',
+        baseline='middle',
+        dy=10,  # Adjust vertical position of labels
+        color='black',
+        fontWeight='bold',
+        fontSize=14
+    ).encode(
+        y=alt.Y('Count'),
+        text=alt.Text('Count:Q')
+    )
+    # Combine the charts
+    chart = alt.layer(
+        bar1,
+        bar1_text,
+        bar2,
+        bar2_text
+    ).resolve_scale(
+        y='shared'
+    ).encode(        
+        color=alt.Color('Category:N', legend=alt.Legend(orient='top', title=None), scale=alt.Scale(
+            domain=[top, y],
+            range=['blue', 'black']
+        ))
+    ).properties(
+        width=600,
+        height=450,
+        title=titlegraph
+    ).configure_axisX(
+        labelFontSize=14,
+        labelFontWeight='bold',
+        labelColor='black'
+    ).configure_axisY(
+        labelFontSize=12,
+        labelColor='white'
+    ).configure_title(
+        fontSize=24,  # Adjust the font size as needed   
+        anchor='middle'     
+    ).configure_legend(
+        labelColor='black',  # Set legend text color to black
+        titleColor='black',   # Set legend title color to black        
+        labelFontWeight='bold'
+    ).configure_view(
+        strokeWidth=0
+    )
+    # Display the chart in Streamlit
+    st.altair_chart(chart, use_container_width=True)
