@@ -431,6 +431,17 @@ if menu_id == "statereport":
         other_func.display_custom_box(wch_colour_box, wch_colour_font, fontsize, valign, iconname, sline, i, per, shc, ayush, phc, uphc, uhwc)
     st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
+    menu_data = [
+        {'label':"Operational AAM", 'id':"opaam"},   
+        {'label': "Monthly Report", 'id': "Monthly_Report"},
+        {'label': "Daily Report", 'id': "Daily_Report"},
+        {'label': "Wellness Report", 'id': "Wellness_Report"}        
+        ]
+
+    menu_id = hc.nav_bar(menu_definition=menu_data)
+
+    if menu_id == "opaam":
+        st.write("hi")
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
