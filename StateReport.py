@@ -107,6 +107,7 @@ targetachievementtable['PHC_%'] = np.round((targetachievementtable['PHC'] / targ
 targetachievementtable['UPHC_%'] = np.round((targetachievementtable['UPHC'] / targetachievementtable['UPHC-Target'].replace(0, np.nan)) * 100).fillna(0).round(2)
 targetachievementtable['UHWCs_%'] = np.round((targetachievementtable['UHWCs'] / targetachievementtable['UHWCs-Target'].replace(0, np.nan)) * 100).fillna(0).round(2)
 targetachievementtable['Total_%'] = np.round((targetachievementtable['Total'] / targetachievementtable['Target'].replace(0, np.nan)) * 100).fillna(0).round(2)
+
 #arange columns for display
 targetachievementtable=targetachievementtable[['District_Name',	'SHC',	'SHC-Target',	'SHC_%',	'AYUSH',	'AYUSH-Target',	'AYUSH_%',	'PHC',	'PHC-Target',	'PHC_%',	'UPHC',	'UPHC-Target',
                                                	'UPHC_%',	'UHWCs',	'UHWCs-Target',	'UHWCs_%',	'Total',	'Target',	'Total_%']]
@@ -523,7 +524,26 @@ if menu_id == "statereport":
         top="District"
         title="District wise % of Operational Facility"                
         other_func.sortedchart(target_op_merged_df,xaxis,yaxis,top,title)
-
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        
+        #Total Operational Sub Centre        
+        st.write("<div style='text-align: center;'><b><h1>Sub Centres</h1></b></div>", unsafe_allow_html=True)
+        col1, col2=st.columns(2)
+        new_df = targetachievementtable[['District_Name', 'SHC-Target', 'SHC']].copy().rename(columns={'District_Name': 'District', 'SHC-Target': 'Target', 'SHC': 'Achievement'})
+        with col1:        
+            st.write("##### Total Operational Sub Centres")
+            # Apply heatmap to the Occurrences column                        
+            other_func.formattedtable(new_df)          
+        with col2:
+            new_df1=new_df
+            # Find the index where 'Jharkhand Total' is located
+            index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
+            # Drop the row
+            new_df = new_df.drop(index_to_drop)
+            graphtitle = "Total Operational Sub Centres"
+            primary_bar = "Target"
+            secondary_bar= "Achievement"
+            other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)
 
 if menu_id == "districtreport":
     st.dataframe(FPE)

@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import altair as alt
+import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import io
@@ -371,7 +372,8 @@ def sortedchart(df,x,y,top,titlegraph):
     # Handle division by zero and NaN values
     df_with_total['Percentage'] = df_with_total['Percentage'].fillna(0).replace([float('inf'), -float('inf')], 0)
     # Format the percentage to 2 decimal places
-    df_with_total['Percentage'] = df_with_total['Percentage'].map('{:.2f}'.format)    
+    df_with_total['Percentage'] = df_with_total['Percentage'].map('{:.2f}'.format) 
+       
     # Create the bar chart with sorting by 'wheat' values
     bar = alt.Chart(df_with_total).mark_bar().encode(
         x=alt.X('District:N', sort=alt.EncodingSortField(
@@ -416,3 +418,42 @@ def sortedchart(df,x,y,top,titlegraph):
                                             )
             )
     st.altair_chart(chart, theme=None, use_container_width=True)
+
+#---------------------------------------------------------------------------------------------------
+#Overlapped 2 bar overlapped Column Graph horizontally same as pyplotgraph 
+def coloumngraph(df,graphtitle,primarybar,secondarybar):
+    table = df        
+    # Calculate the percentage and store in a new column
+    #divided by 0 error aslo handeled
+    table['Percentage'] = (table.iloc[:, 2] / (table.iloc[:, 1] + 1e-10)) * 100
+    table=table.sort_values(by='Percentage', ascending=False)
+    fig, ax = plt.subplots(figsize=(6, 8.5))  # Adjust the width and height as needed
+    # Define the bar positions
+    bar_positions = range(len(table))    
+    # Plot the horizontal bars
+    Primary_Bar = ax.barh(bar_positions, table.iloc[:, 1], 
+                                    height=.9, label=primarybar, color='blue')
+    Secondary_bar = ax.barh([pos + 0.0 for pos in bar_positions], table.iloc[:, 2],
+                    height=0.6, label=secondarybar, color='orange')    
+    # Set the title and labels
+    ax.set_title(graphtitle, fontsize=10, weight='bold')
+    ax.set_yticks([pos + 0.0 for pos in bar_positions])
+    ax.set_yticklabels(table.iloc[:, 0], fontsize=8)
+    ax.set_xticks([])  # Hide the x-axis ticks for a cleaner look
+    ax.invert_yaxis()  # Invert the y-axis to have the first district at the top
+    # Add bar labels for clarity
+    ax.bar_label(Primary_Bar, padding=4, fontsize=8, weight='bold', color='blue')
+    ax.bar_label(Secondary_bar, padding=-16, fontsize=8, weight='bold')    
+    # Add legend
+    ax.legend(loc='upper center', ncol=2, fontsize=8, frameon=False)
+    # Add legend in a single line
+    #ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=2, fontsize=8, frameon=False)
+    # Set chart border color to white for a minimalist look
+    ax.spines['top'].set_color('white')
+    ax.spines['left'].set_color('white')
+    ax.spines['right'].set_color('white')
+    ax.spines['bottom'].set_color('white')
+    # Adjust the layout to avoid clipping the labels
+    plt.tight_layout()
+    # Display the plot in Streamlit
+    st.pyplot(fig, bbox_inches='tight', pad_inches=0)    
