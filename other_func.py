@@ -31,7 +31,7 @@ def gototop():
         <style>
             .scroll-to-top-button {
                 position: fixed;
-                bottom: 20px;
+                bottom: 45px;
                 right: 20px;
                 background-color: #007bff;
                 color: white;
@@ -60,3 +60,30 @@ def gototop():
         </a>
         """
         , unsafe_allow_html=True)
+    
+    #------------------------------------------------
+    #formatted Table
+def formattedtable(table_df):     
+        table_df1=table_df
+        # Calculate the percentage and store in a new column
+        table_df1.iloc[:, 0] = table_df1.iloc[:, 0].replace('Total', 'Jharkhand Total')
+        #divided by 0 error aslo handeled
+        table_df1['Percentage'] = (table_df1.iloc[:, 2] / (table_df1.iloc[:, 1] + 1e-10)) * 100
+        table_df1=table_df1.sort_values(by='Percentage', ascending=False)
+        # Handle division by zero and NaN values
+        table_df1['Percentage'] = table_df1['Percentage'].fillna(0).replace([float('inf'), -float('inf')], 0)
+        # Format the percentage to 2 decimal places
+        table_df1['Percentage'] = table_df1['Percentage'].map('{:.2f}'.format)
+        # Apply heatmap to the Occurrences column (RdYlGn/summer_r/PiYG)
+        styled_df = table_df1.style.background_gradient(subset=['Percentage'], cmap='RdYlGn').set_properties(**{'font-weight': 'bold','color': 'black', 'border-color': 'light gray'})
+        # Add custom styling for column headers
+        styled_df = styled_df.set_table_styles(
+            [{'selector': 'thead th', 'props': [('background-color', '#2196F3'), ('color', 'white')]}]
+        )
+        # Hide the index column
+        styled_df = styled_df.hide(axis='index')        
+        # Convert styled dataframe to HTML
+        html_table = styled_df.to_html()
+        # Display the styled, sorted merged dataframe with heatmap
+        st.markdown(html_table, unsafe_allow_html=True)         
+        #generate_excel_download_link(styled_df)  

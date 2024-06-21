@@ -441,7 +441,21 @@ if menu_id == "statereport":
     menu_id = hc.nav_bar(menu_definition=menu_data)
 
     if menu_id == "opaam":
-        st.write("hi")
+        col1, col2=st.columns(2)
+        category_order = ['SHC', 'AYUSH', 'PHC', 'UPHC', 'UHWCs', 'Total']
+        # Sort the DataFrame based on the custom order
+        total_row_only['Category'] = pd.Categorical(total_row_only['Category'], categories=category_order, ordered=True)
+        total_row_only = total_row_only.sort_values('Category')
+        total_row_only.reset_index(drop=True, inplace=True)                
+        total_row_only1 = total_row_only.rename(columns={ 'Operational': 'Operational Facility'})
+        with col1:
+            st.write("#### Total Target Vs Total Operational Facility")
+            st.write("")
+            st.write("")
+            other_func.formattedtable(total_row_only1[["Category","Target", "Operational Facility"]])             
+        with col2:        
+            total_row_only1 = total_row_only1.rename(columns={'Category': 'District'})
+            st.write("hi")
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
