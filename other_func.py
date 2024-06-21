@@ -1,11 +1,4 @@
-import streamlit as st
-from io import BytesIO  
-import base64
-import altair as alt
-import pandas as pd
-import numpy as np
-import io
-import matplotlib.pyplot as plt
+
 
 #--------------------------------------------------------------------------------------------------------
 def gototop():
