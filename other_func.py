@@ -379,6 +379,12 @@ def sortedchart(df,x,y,top,titlegraph):
         x=alt.X('District:N', sort=alt.EncodingSortField(
             field='Percentage',  # Sort by the 'wheat' field
             order='descending'  # Sort in descending order
+        ),
+        axis=alt.Axis(
+            labelFontSize=15,  # Set the font size for x-axis labels
+            labelFontWeight='bold',  # Set the font weight to bold
+            labelFont='Calibri',  # Set the font family (optional)
+            labelColor='black'
         )),
         #y='Percentage:Q'
         y=alt.Y('Percentage:Q', axis=alt.Axis(title='Percentage')),
@@ -412,9 +418,11 @@ def sortedchart(df,x,y,top,titlegraph):
     chart = (bar + text + rule).properties(width=640, 
                                            title=alt.TitleParams(
                                                 text=titleofgraph,
-                                                fontSize=21,
+                                                #fontStyle='Calibri',
+                                                font='Calibri',
+                                                fontSize=23,
                                                 anchor='middle',
-                                                color='black'
+                                                color='black'                                                
                                             )
             )
     st.altair_chart(chart, theme=None, use_container_width=True)

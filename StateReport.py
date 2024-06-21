@@ -544,6 +544,13 @@ if menu_id == "statereport":
             primary_bar = "Target"
             secondary_bar= "Achievement"
             other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Achievement'
+        top="District"
+        title="District wise % of Operational Facility"                
+        other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
