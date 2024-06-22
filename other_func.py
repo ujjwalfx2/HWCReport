@@ -435,7 +435,7 @@ def coloumngraph(df,graphtitle,primarybar,secondarybar):
     #divided by 0 error aslo handeled
     table['Percentage'] = (table.iloc[:, 2] / (table.iloc[:, 1] + 1e-10)) * 100
     table=table.sort_values(by='Percentage', ascending=False)
-    fig, ax = plt.subplots(figsize=(6, 8.5))  # Adjust the width and height as needed
+    fig, ax = plt.subplots(figsize=(6, 11))  # Adjust the width and height as needed
     # Define the bar positions
     bar_positions = range(len(table))    
     # Plot the horizontal bars
