@@ -1,22 +1,8 @@
 import pandas as pd
-import numpy as np
 import streamlit as st
-from st_aggrid import AgGrid
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from dash import Dash, html, dash_table, dcc
-import plotly.express as px
-import altair as alt
-import plotly.graph_objects as go
-import plotly.figure_factory as ff
 import other_func #function calling from key_indicator py file
-import io
-import base64
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment
 from openpyxl.utils.dataframe import dataframe_to_rows
-import hydralit_components as hc
-import re 
+
 #with st.expander("Upload Files"):
         # file upload
         #upload_file_FPE = st.file_uploader("Upload Facility Profile Entry Data in CSV format", type=['csv'])
@@ -141,15 +127,7 @@ def blockwiseoperationa(selectdist):
     other_func.create_bar_graph_streamlit(blockOP_crosstab_without_total,block_name)
   st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)    
 
-  # specify the primary menu definition
-  menu_data = [
-      {'label':"Monthly Report", 'id':"MonthlyReport"},   
-      {'label': "Daily Report", 'id': "DailyReport"},
-      {'label': "Wellness Report", 'id': "WellnessReport"},
-      {'label': "Other Checks", 'id': "OtherChecks"}
-      ]
 
-  menu_id = hc.nav_bar(menu_definition=menu_data)
    
   
   

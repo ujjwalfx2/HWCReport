@@ -3,7 +3,7 @@ import streamlit as st
 import hydralit_components as hc
 import numpy as np
 import other_func #import user define py files
-
+import DistrictReport #import user define py files
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from openpyxl import Workbook
@@ -741,6 +741,14 @@ if menu_id == "statereport":
 
 if menu_id == "districtreport":
     st.warning("hello")
+    with st.expander("Upload Files"):
+        # file upload
+        upload_file_FPE = st.file_uploader("Upload Facility Profile Entry Data in CSV format", type=['csv'])
+        upload_file_DE = st.file_uploader("Upload Daily Entry Data of one month in CSV format", type=['csv'])
+        upload_file_SD = st.file_uploader("Upload Service Delivery Data of one month in CSV format", type=['csv'])
+        upload_file_WL = st.file_uploader("Upload Wellness Activity of on month in CSV format", type=['csv'])
+        upload_file_Target = st.file_uploader("Upload Target of the State in CSV format", type=['csv'])
+    st.markdown("---")
 
 
 

@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import io
+import re
+
 
 #--------------------------------------------------------------------------------------------------------
 def pagecounter():
@@ -110,7 +112,17 @@ def generate_excel_download_link(df):
     b64 = base64.b64encode(towrite.read()).decode()
     href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="Rename_This_File.xlsx">Download</a>'
     return st.markdown(href, unsafe_allow_html=True)
-
+#-------------------------------------------------------------------------------
+def generate_excel_download_link_with_file_name(df,fn):
+    #Credit Excel: https://discuss.streamlit.io/t/how-to-add-a-download-excel-csv-function-to-a-button/4474/5
+    towrite = BytesIO()
+    df.to_excel(towrite, index=False, header=True)  # write to BytesIO buffer
+    towrite.seek(0)  # reset pointer
+    b64 = base64.b64encode(towrite.read()).decode()
+    fn=re.sub(r'[^a-zA-Z0-9\s]', '', fn) + ".xlsx" 
+    fn = fn.replace(' ', '_')
+    href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download={fn}>Download </a>'
+    return st.markdown(href, unsafe_allow_html=True)
 #--------------------------------------------------------------------------
 def get_table_download_link(df, file_name='District wise Target Vs Operational.xlsx'):
     excel_file = download_excel_file(df)
