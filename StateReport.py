@@ -3,7 +3,7 @@ import streamlit as st
 import hydralit_components as hc
 import numpy as np
 import other_func #import user define py files
-import DistrictReport #import user define py files
+
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from openpyxl import Workbook
