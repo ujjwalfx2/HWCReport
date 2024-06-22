@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 import hydralit_components as hc
 import numpy as np
-import other_func #function calling from key_indicator py file
+import other_func #import user define py files
+import DistrictReport #import user define py files
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from openpyxl import Workbook
@@ -735,11 +736,84 @@ if menu_id == "statereport":
         df=df[[top,xaxis,yaxis]]
         other_func.sortedchart(df,xaxis,yaxis,top,title)
 
-
+#____District____Report_________________________________________________________________
 
 
 if menu_id == "districtreport":
-    st.dataframe(FPE)
+    with st.expander("Upload Files"):
+        # file upload
+        upload_file_FPE = st.file_uploader("Upload Facility Profile Entry Data in CSV format", type=['csv'])
+        upload_file_DE = st.file_uploader("Upload Daily Entry Data of one month in CSV format", type=['csv'])
+        upload_file_SD = st.file_uploader("Upload Service Delivery Data of one month in CSV format", type=['csv'])
+        upload_file_WL = st.file_uploader("Upload Wellness Activity of on month in CSV format", type=['csv'])
+        upload_file_Target = st.file_uploader("Upload Target of the State in CSV format", type=['csv'])
+    st.markdown("---")
+    #Call DistrictReport py file
+    #with open('DistrictReport.py') as file:
+        #exec(file.read())
+    districtselected=DistrictReport.selectdistrict(df_raw)    
+    if len(districtselected) > 0 :
+        dist=districtselected.iloc[0]["District_Name"]    
+        #filter target
+        filter_target=target.query("District== @dist")        
+        #call kpi callculation and store it in a arrary
+        kpical=DistrictReport.KPI_Box_Calculation(districtselected)        
+        st.subheader(f"AAM Dashboard for the month of : {DE['Month-Year'].unique()}")  
+        #District wise KPI    
+        col1, col2, col3 = st.columns(3)
+        with col1:            
+            sline = "Total Operational Facility"
+            op_percent=(kpical[5]/filter_target.iloc[0]["Target"]) *100
+            op_percent = f"{op_percent:.0f}"            
+            other_func.display_custom_box((50,1810,26), (0,0,0), 36, "left", "fas fa-hospital", sline, kpical[5], op_percent, kpical[0], kpical[1], kpical[2], kpical[3], kpical[4])
+
+        with col2:            
+            sline = "Total Facility Reported Daily Entry >=20 days"           
+            per = round(kpical[11]/filter_target.iloc[0]["Target"] * 100)           
+            other_func.display_custom_box((0,102,204), (0,0,0), 36, "left", "fas fa-pen", sline, kpical[11], per, kpical[6], kpical[7], kpical[8], kpical[9], kpical[10])
+            
+        with col3:
+            sline = "Total Facility Reported Monthly Report (SD)"            
+            per = round(kpical[17]/filter_target.iloc[0]["Target"] * 100)
+            other_func.display_custom_box((204,20,200), (0,0,0), 36, "left", "fas fa-file", sline, kpical[17], per, kpical[12], kpical[13], kpical[14], kpical[15], kpical[16])
+            
+        col1, col2, col3 = st.columns(3)
+        with col1:            
+            sline = "Total Facility Reported Wellness Entry >=10 days"            
+            per = round(kpical[23]/filter_target.iloc[0]["Target"] * 100)            
+            other_func.display_custom_box((50,500,150), (0,0,0), 36, "left", "fas fa-hand-holding-heart", sline, kpical[23], per, kpical[18], kpical[19], kpical[20], kpical[21], kpical[22])            
+        
+        with col2:
+            sline = "80 % availability of Medicine"
+            i = drug_total
+            per = round(kpical[29]/filter_target.iloc[0]["Target"] * 100)            
+            other_func.display_custom_box((230,173,170), (0,0,0), 36, "left", "fas fa-file", sline, kpical[29], per, kpical[24], kpical[25], kpical[26], kpical[27], kpical[28])
+            
+        with col3:
+            sline = "80 % availability of Diagnostics"
+            per = round(kpical[35]/filter_target.iloc[0]["Target"] * 100)   
+            other_func.display_custom_box((255,195,0), (0,0,0), 36, "left", "fas fa-hand-holding-heart", sline, kpical[35], per, kpical[30], kpical[31], kpical[32], kpical[33], kpical[34])
+
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)            
+        DistrictReport.blockwiseoperationa(districtselected)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if menu_id == "blockreport":
     st.dataframe(DE)
