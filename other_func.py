@@ -372,7 +372,7 @@ def sortedchart(df,x,y,top,titlegraph):
     # Handle division by zero and NaN values
     df_with_total['Percentage'] = df_with_total['Percentage'].fillna(0).replace([float('inf'), -float('inf')], 0)
     # Format the percentage to 2 decimal places
-    df_with_total['Percentage'] = df_with_total['Percentage'].map('{:.2f}'.format) 
+    df_with_total['Percentage'] = df_with_total['Percentage'].map('{:.1f}'.format) 
        
     # Create the bar chart with sorting by 'wheat' values
     bar = alt.Chart(df_with_total).mark_bar().encode(
