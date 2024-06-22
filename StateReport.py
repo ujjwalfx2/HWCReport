@@ -335,7 +335,7 @@ menu_id = hc.nav_bar(menu_definition=menu_data)
 if menu_id == "statereport":
     #KPI
     st.subheader(f"AAM Dashboard for the month of : {DE['Month-Year'].unique()}")
-    with st.expander("Click to see Key Performance Indicators (KPI)"):    
+    with st.expander("Click here... to see Key Performance Indicators (KPI)"):    
         col1, col2, col3 = st.columns(3)
         with col1:
             wch_colour_box = (50,1810,26)
@@ -522,16 +522,16 @@ if menu_id == "statereport":
         xaxis="Target"
         yaxis='Operational Facility'
         top="District"
-        title="District wise % of Operational Facility"                
+        title="District wise % of Total Operational Facility"                
         other_func.sortedchart(target_op_merged_df,xaxis,yaxis,top,title)
         st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
         
         #Total Operational Sub Centre        
-        st.write("<div style='text-align: center;'><b><h1>Sub Centres</h1></b></div>", unsafe_allow_html=True)
+        st.write("<div style='text-align: center;'><b><h1>Sub Health Centres</h1></b></div>", unsafe_allow_html=True)
         col1, col2=st.columns(2)
         new_df = targetachievementtable[['District_Name', 'SHC-Target', 'SHC']].copy().rename(columns={'District_Name': 'District', 'SHC-Target': 'Target', 'SHC': 'Achievement'})
         with col1:        
-            st.write("##### Total Operational Sub Centres")
+            st.write("##### Total Operational Sub Health Centres")
             # Apply heatmap to the Occurrences column                        
             other_func.formattedtable(new_df)          
         with col2:
@@ -540,7 +540,7 @@ if menu_id == "statereport":
             index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
             # Drop the row
             new_df = new_df.drop(index_to_drop)
-            graphtitle = "Total Operational Sub Centres"
+            graphtitle = "Total Operational Sub Health Centres"
             primary_bar = "Target"
             secondary_bar= "Achievement"
             other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)
@@ -548,9 +548,124 @@ if menu_id == "statereport":
         xaxis="Target"
         yaxis='Achievement'
         top="District"
-        title="District wise % of Operational Facility"                
+        title="District wise % of Operational Sub Health Centre"                
         other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
         st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+
+        #Total Operational AYUSH
+        st.write("<div style='text-align: center;'><b><h1>AYUSH Sub Centres</h1></b></div>", unsafe_allow_html=True)
+        col1, col2=st.columns(2)
+        new_df = targetachievementtable[['District_Name', 'AYUSH-Target', 'AYUSH']].copy().rename(columns={'District_Name': 'District', 'AYUSH-Target': 'Target', 'AYUSH': 'Achievement'})
+        with col1:        
+            st.write("##### Total Operational AYUSH Sub Centre")
+            # Apply heatmap to the Occurrences column                        
+            other_func.formattedtable(new_df)
+        # Operational AAM Tab - Target  Vs Operational graph        
+        with col2:
+            # Find the index where 'District D' is located
+            new_df1=new_df
+            index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
+            # Drop the row
+            new_df = new_df.drop(index_to_drop)            
+            graphtitle = "Total Operational AYUSH Sub Centre"
+            primary_bar = "Target"
+            secondary_bar= "Achievement"
+            other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)        
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Achievement'
+        top="District"
+        title="District wise % of Operational AYUSH Sub Centre"                
+        other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        
+        #Total Operational Primary Health Centre
+        st.write("<div style='text-align: center;'><b><h1>Primary Health Centre</h1></b></div>", unsafe_allow_html=True)
+        col1, col2=st.columns(2)
+        new_df = targetachievementtable[['District_Name', 'PHC-Target', 'PHC']].copy().rename(columns={'District_Name': 'District', 'PHC-Target': 'Target', 'PHC': 'Achievement'})
+        with col1:        
+            st.write("##### Total Operational Primary Health Centre")
+            # Apply heatmap to the Occurrences column                        
+            other_func.formattedtable(new_df)            
+        # Operational AAM Tab - Target  Vs Operational graph        
+        with col2:
+            new_df1=new_df
+            # Find the index where 'District D' is located
+            index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
+            # Drop the row
+            new_df = new_df.drop(index_to_drop)
+            #new_df_filtered = new_df.data[new_df.data['District'] != 'Jharkhand Total']
+            graphtitle = "Total Operational Primary Health Centre"
+            primary_bar = "Target"
+            secondary_bar= "Achievement"
+            other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)        
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Achievement'
+        top="District"
+        title="District wise % of Operational Primary Health Centre"                
+        other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        st.write("<div style='text-align: center;'><b><h1>Urban Health Centre</h1></b></div>", unsafe_allow_html=True)
+        
+        #Total Operational UPHC
+        col1, col2=st.columns(2)
+        new_df = targetachievementtable[['District_Name', 'UPHC-Target', 'UPHC']].copy().rename(columns={'District_Name': 'District', 'UPHC-Target': 'Target', 'UPHC': 'Achievement'})
+        with col1:        
+            st.write("##### Total Operational UPHCs")
+            # Apply heatmap to the Occurrences column                        
+            other_func.formattedtable(new_df)       
+        # Operational AAM Tab - Target  Vs Operational graph        
+        with col2:
+            new_df1=new_df
+            # Find the index where 'District D' is located
+            index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
+            # Drop the row
+            new_df = new_df.drop(index_to_drop)
+            #new_df_filtered = new_df.data[new_df.data['District'] != 'Jharkhand Total']
+            graphtitle = "Total Operational UPHCs"
+            primary_bar = "Target"
+            secondary_bar= "Achievement"
+            other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)        
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Achievement'
+        top="District"
+        title="District wise % of Operational Urban Primary Health Centre"                
+        other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        st.write("<div style='text-align: center;'><b><h1>UHWCs Centre</h1></b></div>", unsafe_allow_html=True)
+        
+        #Total Operational UHWCs
+        col1, col2=st.columns(2)
+        new_df = targetachievementtable[['District_Name', 'UHWCs-Target', 'UHWCs']].copy().rename(columns={'District_Name': 'District', 'UHWCs-Target': 'Target', 'UHWCs': 'Achievement'})
+        with col1:        
+            st.write("##### Total Operational UHWCs")
+            # Apply heatmap to the Occurrences column                        
+            other_func.formattedtable(new_df)                
+        # Operational AAM Tab - Target  Vs Operational graph        
+        with col2:
+            new_df1=new_df
+            # Find the index where 'District D' is located
+            index_to_drop = new_df[new_df.iloc[:, 0] == 'Jharkhand Total'].index
+            # Drop the row
+            new_df = new_df.drop(index_to_drop)
+            #new_df_filtered = new_df.data[new_df.data['District'] != 'Jharkhand Total']
+            graphtitle = "Total Operational UHWCs"
+            primary_bar = "Target"
+            secondary_bar= "Achievement"
+            other_func.coloumngraph(new_df,graphtitle, primary_bar, secondary_bar)
+        st.write("\n\n\n")
+        xaxis="Target"
+        yaxis='Achievement'
+        top="District"
+        title="District wise % of Operational UHWCs"                
+        other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+
+
+
+
 
 if menu_id == "districtreport":
     st.dataframe(FPE)
