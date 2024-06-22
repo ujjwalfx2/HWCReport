@@ -663,6 +663,77 @@ if menu_id == "statereport":
         other_func.sortedchart(new_df1,xaxis,yaxis,top,title)
         st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
 
+    # Monthly Report Tab    
+    if menu_id == "Monthly_Report":
+        col1, col2=st.columns(2)
+        #Monthly Report Tab - Formatted Table
+        table_df=summary_df[['District', 'Operational Facility', 'Monthly Reporting']]    
+        with col1:            
+            #table_df
+            st.write("##### No. of Facility Reported Monthly Service Delivery")
+            other_func.formattedtable(table_df)            
+        # Monthly Report Tab - Operational Vs Monthly Report Graph
+        with col2:
+            graphtitle = "No. of Facility Reported Monthly Service Delivery"
+            primary_bar = "Operational Facility"
+            secondary_bar= "Monthly Report"
+            other_func.coloumngraph(table_df,graphtitle, primary_bar, secondary_bar)
+        # Monthly Report Tab - sorted % wise Graph
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)        
+        xaxis="Operational Facility"
+        yaxis='Monthly Reporting'
+        top="District"
+        title="% of Facility Reported Monthly Service Delivery"
+        df1=df[[top,xaxis,yaxis]]
+        other_func.sortedchart(df1,xaxis,yaxis,top,title)
+    
+    # Daily Report Tab    
+    if menu_id == "Daily_Report":
+        col1, col2=st.columns(2)
+        #Daily Report Tab - Formatted Table                
+        table_df=summary_df[['District', 'Operational Facility', 'Daily Reporting >= 20 days']]                
+        with col1:            
+            #table_df
+            st.write("##### No. of Facility Reported Daily Entry >=20 Days")
+            other_func.formattedtable(table_df)            
+        # Monthly Report Tab - Operational Vs Monthly Report Graph
+        with col2:
+            graphtitle = "No. of Facility Reported Daily Entry >=20 Days"
+            primary_bar = "Operational Facility"
+            secondary_bar= "Daily Reporting >= 20 days"
+            other_func.coloumngraph(table_df,graphtitle, primary_bar, secondary_bar)
+        # Monthly Report Tab - sorted % wise Graph
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        xaxis="Operational Facility"
+        yaxis='Daily Reporting >= 20 days'
+        top="District"
+        title="% of Facility Reported Daily Entry >=20 Days"        
+        df=df[[top,xaxis,yaxis]]
+        other_func.sortedchart(df,xaxis,yaxis,top,title)
+    
+    # Wellness Report Tab    
+    if menu_id == "Wellness_Report":
+        col1, col2=st.columns(2)
+        #Wellness Report Tab - Formatted Table                
+        table_df=summary_df[['District', 'Operational Facility', 'Wellness Reporting >=10 days']]                
+        with col1:            
+            #table_df
+            st.write("##### No. of Facility Reported Wellness Session >= 10 per month")
+            other_func.formattedtable(table_df)            
+        # Monthly Report Tab - Operational Vs Monthly Report Graph
+        with col2:
+            graphtitle = "No. of Facility Reported Wellness Session >=10 per month"
+            primary_bar = "Operational Facility"
+            secondary_bar= "Wellness Reporting >=10 days"
+            other_func.coloumngraph(table_df,graphtitle, primary_bar, secondary_bar)
+        # Monthly Report Tab - sorted % wise Graph
+        st.markdown("""<div style="background: linear-gradient(to right, orange, yellow, green, blue, indigo, violet, red); height: 3px; width: 100%;"></div><br><br>""", unsafe_allow_html=True)
+        xaxis="Operational Facility"
+        yaxis='Wellness Reporting >=10 days'
+        top="District"
+        title="% of Facility Reported Wellness Session >=10 per month"        
+        df=df[[top,xaxis,yaxis]]
+        other_func.sortedchart(df,xaxis,yaxis,top,title)
 
 
 
