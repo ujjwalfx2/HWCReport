@@ -739,8 +739,7 @@ if menu_id == "statereport":
 #____District____Report_________________________________________________________________
 
 
-if menu_id == "districtreport":
-    st.warning("hello")
+if menu_id == "districtreport":    
     with st.expander("Upload Files"):
         # file upload
         upload_file_FPE = st.file_uploader("Upload Facility Profile Entry Data in CSV format", type=['csv'])
