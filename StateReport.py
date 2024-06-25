@@ -749,7 +749,7 @@ if menu_id == "districtreport":
         upload_file_Target = st.file_uploader("Upload Target of the State in CSV format", type=['csv'])
     st.markdown("---")
     selectdist=DistrictReport.selectdistrict(df_raw)
-    if selectdist is not None:
+    if len(selectdist) >0:
         DistrictReport.blockwiseoperationa(selectdist)
 
 
