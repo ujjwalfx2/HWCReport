@@ -477,3 +477,24 @@ def coloumngraph(df,graphtitle,primarybar,secondarybar):
     plt.tight_layout()
     # Display the plot in Streamlit
     st.pyplot(fig, bbox_inches='tight', pad_inches=0)    
+
+#---------------------------------------------------------------------------
+# Function to create bar graph for a selected block
+def create_bar_graph_streamlit(df,block_name):
+    block_data = df[df["Block_Name"] == block_name].iloc[0]
+    categories = ["SHC", "AYUSH", "PHC", "UPHC", "UHWCs"]
+    values = block_data[categories].values
+
+    fig, ax = plt.subplots(figsize=(9, 4))  # Adjust figure size
+    bars = ax.bar(categories, values, color=['blue', 'green', 'red', 'purple', 'orange'])
+    ax.set_xlabel("Categories")
+    ax.set_ylabel("Values")
+    #ax.set_title(f"Healthcare Facilities in {block_name}")
+    ax.set_ylim(0, max(df[categories].max()) + 5)
+    
+    # Add data labels
+    for bar in bars:
+        yval = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2, yval + 0.2, int(yval), ha='center', va='bottom', weight='bold', fontsize=14)
+    ax.yaxis.set_visible(False)  # Hide the y-axis
+    st.pyplot(fig)
