@@ -749,7 +749,7 @@ if menu_id == "districtreport":
         upload_file_WL = st.file_uploader("Upload Wellness Activity of on month in CSV format", type=['csv'])
         upload_file_Target = st.file_uploader("Upload Target of the State in CSV format", type=['csv'])
     st.markdown("---")
-    selectdist=DistrictReport.selectdistrict()
+    selectdist=DistrictReport.selectdistrict(df_raw)
     DistrictReport.blockwiseoperationa(selectdist)
 
 
