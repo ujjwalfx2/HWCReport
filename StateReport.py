@@ -8,17 +8,12 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from openpyxl import Workbook
 
-def load_data():
-    # Load the CSV file
-    FPE = pd.read_csv("data/statedata/Op-FPE.csv", encoding='unicode_escape')    
-    DE = pd.read_csv("data/statedata/DE.csv", encoding='unicode_escape')    
-    sd = pd.read_csv("data/statedata/SD.csv", encoding='unicode_escape')    
-    wl=pd.read_csv('data/statedata/Wellness.csv', encoding='unicode_escape')
-    target=pd.read_csv('data/statedata/target.csv', encoding='unicode_escape')
-    return FPE, DE, sd, wl, target
-
-#load all csv data in dataframe
-FPE, DE, sd, wl, target = load_data()
+# Load the CSV file
+FPE = pd.read_csv("data/statedata/Op-FPE.csv", encoding='unicode_escape')    
+DE = pd.read_csv("data/statedata/DE.csv", encoding='unicode_escape')    
+sd = pd.read_csv("data/statedata/SD.csv", encoding='unicode_escape')    
+wl=pd.read_csv('data/statedata/Wellness.csv', encoding='unicode_escape')
+target=pd.read_csv('data/statedata/target.csv', encoding='unicode_escape')
 
 st.set_page_config(page_title="Ujjwal", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 st.markdown("<div id='top'></div>", unsafe_allow_html=True)
