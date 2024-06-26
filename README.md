@@ -1,3 +1,3 @@
-# HWCReport
-HWC Reporting
+# Dashboard
+
 its a demo project
