@@ -17,10 +17,11 @@ def load_data():
     target=pd.read_csv('data/statedata/target.csv', encoding='unicode_escape')
     return FPE, DE, sd, wl, target
 
-st.set_page_config(page_title="Ujjwal", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
-st.markdown("<div id='top'></div>", unsafe_allow_html=True)
 #load all csv data in dataframe
 FPE, DE, sd, wl, target = load_data()
+
+st.set_page_config(page_title="Ujjwal", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
+st.markdown("<div id='top'></div>", unsafe_allow_html=True)
 
 # hide menu and footer
 hide_streamlit_style = """
